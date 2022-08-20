@@ -2,6 +2,7 @@
 import os
 import numpy as np
 import librosa
+from tqdm import tqdm
 
 def make_frames(filename,folder,frame_length,overlapping_fraction):
 	''' takes the .wav file name, frame length and overlapping percentage and returns numpy arrays of frames and classes'''
@@ -21,12 +22,15 @@ def make_frames_folder(folders,frame_length,overlapping_fraction):
 	''' takes a list of folders and makes frames for all audio files in that folder'''
 	data = []
 	for folder in folders:
+		print(folder)
 		files = os.listdir('./dataset/audio'+'/'+folder)
-		for file in files:
+		for file in tqdm(files):
 			res = make_frames(file,folder,frame_length,overlapping_fraction)
 			if res is not None:
 				data.append(res)
 	dataset = data[0]
+	
+	print("Stacking data")
 	for i in range(1,len(data)):
 		dataset = np.vstack((dataset,data[i]))
 	return dataset	
